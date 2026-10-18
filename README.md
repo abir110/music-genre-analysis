@@ -1,4 +1,4 @@
-# 🎵 Music Genre Tagging: Accuracy You Can Trust Across Every Genre
+# Music Genre Tagging: Accuracy You Can Trust Across Every Genre
 
 **Client question:** a music streaming service wants to auto-tag the genre of new songs. *How accurate would it be, and is it reliable for every genre, not just the common ones?*
 
@@ -6,7 +6,7 @@
 
 ---
 
-## 📌 The answer
+## The answer
 
 | Question | Answer |
 |---|---|
@@ -18,7 +18,7 @@
 
 ---
 
-## 🔍 How I got there
+## How I got there
 
 ### 1. The genres are heavily imbalanced
 Rock makes up 48% of songs and Classical only 3%. A model that always guesses "Rock" scores **48% accuracy** but a macro-F1 of just **0.13**. That's why every model here is judged on **macro-F1**, where every genre counts equally, and **per-genre recall**.
@@ -38,13 +38,13 @@ All scored by 5-fold stratified cross-validation on the training set (80% of son
 | Approach | Macro-F1 | Verdict |
 |---|---|---|
 | Always predict Rock | 0.13 | Baseline: shows accuracy alone misleads |
-| Random forest (balanced) | 0.75 | ❌ Rejected: tags only 44% of Folk correctly |
+| Random forest (balanced) | 0.75 | Rejected: tags only 44% of Folk correctly |
 | Logistic regression (balanced) | 0.77 | Strong simple baseline, but weak on Rock and Electronic |
 | SVM, RBF kernel (balanced) | 0.78 | Better, still well behind boosting |
-| Gradient boosting + SMOTE | 0.82 | ❌ Rejected: oversampling, applied inside each fold, slightly *hurt* |
-| Gradient boosting, tuned | 0.83 | ❌ Rejected: tuning gave no gain over the defaults |
+| Gradient boosting + SMOTE | 0.82 | Rejected: oversampling, applied inside each fold, slightly *hurt* |
+| Gradient boosting, tuned | 0.83 | Rejected: tuning gave no gain over the defaults |
 | Gradient boosting, no weighting | 0.83 | Good, but weaker on Folk and Hip-Hop |
-| **Gradient boosting + class weights** | **0.84** | ✅ **Final model:** best macro-F1, chosen on cross-validation alone |
+| **Gradient boosting + class weights** | **0.84** | **Final model:** best macro-F1, chosen on cross-validation alone |
 
 ### 4. Where the model gets confused
 Almost every mistake involves the two biggest genres. **17% of Folk** is tagged as Rock, and **11% of Hip-Hop** is tagged as Electronic. Classical is almost never mistaken for anything else: when the model says Classical, it is right **98%** of the time.
@@ -71,7 +71,7 @@ At 80%, the review queue is weighted towards the hardest genres: about 27% of Fo
 
 ---
 
-## 💡 Recommendations
+## Recommendations
 
 1. **Deploy with a human in the loop:** auto-tag at ≥ 80% confidence and route the rest to editors.
 2. **Prioritise Folk** for editor review and for collecting more training examples. It's the genre most often mislabelled.
@@ -80,14 +80,14 @@ At 80%, the review queue is weighted towards the hardest genres: about 27% of Fo
 
 ---
 
-## 📓 Notebooks
+## Notebooks
 
 | Notebook | What it covers |
 |---|---|
 | [`01_data_exploration.ipynb`](notebooks/01_data_exploration.ipynb) | Loading and naming the 237 features, data quality checks, genre balance, genre sound profiles |
 | [`02_modelling.ipynb`](notebooks/02_modelling.ipynb) | Eight-model comparison, imbalance handling, held-out test evaluation, confusion analysis, feature importance, confidence-based workflow |
 
-## 🗂️ Structure
+## Structure
 
 ```
 music-genre-analysis/
@@ -109,7 +109,7 @@ music-genre-analysis/
 └── requirements.txt
 ```
 
-## ▶️ How to run
+## How to run
 
 ```bash
 git clone https://github.com/abir110/music-genre-analysis.git
@@ -120,11 +120,11 @@ jupyter lab notebooks/
 
 Run `01_data_exploration.ipynb`, then `02_modelling.ipynb`. The modelling notebook takes about **30 minutes** on a laptop, mostly the hyperparameter search. All randomness is seeded, so results are reproducible.
 
-## 🛠️ Tools
+## Tools
 
 Python · pandas · NumPy · scikit-learn (gradient boosting, SVM, logistic regression, random forest, cross-validation, permutation importance) · imbalanced-learn (SMOTE) · Matplotlib
 
-## 📚 About the data
+## About the data
 
 Extract from the Free Music Archive (Defferrard et al., 2017, *FMA: A Dataset for Music Analysis*), provided for the classification coursework in my MSc Data Science *Machine Learning* module at Aston University. The file has no column names. I mapped them to the FMA Echonest feature set (8 audio descriptors, 5 popularity scores and 224 temporal features) and confirmed the mapping from the value ranges.
 
